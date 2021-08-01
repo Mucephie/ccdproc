@@ -10,7 +10,7 @@ from astropy.nddata import NDData
 from astropy import units as u
 from astropy.io import fits
 
-import ccdproc  # Really only need Keyword from ccdproc
+import ccdprocx  # Really only need Keyword from ccdproc
 
 __all__ = []
 
@@ -18,7 +18,7 @@ _LOG_ARGUMENT = 'add_keyword'
 
 _LOG_ARG_HELP = \
     """
-    {arg} : str, `~ccdproc.Keyword` or dict-like, optional
+    {arg} : str, `~ccdprocx.Keyword` or dict-like, optional
         Item(s) to add to metadata of result. Set to False or None to
         completely  disable logging.
         Default is to add a dictionary with a single item:
@@ -104,7 +104,7 @@ def log_to_metadata(func):
         else:
             # Logging is not turned off, but user did not provide a value
             # so construct one unless the config parameter auto_logging is set to False
-            if ccdproc.conf.auto_logging:
+            if ccdprocx.conf.auto_logging:
                 key = func.__name__
                 # Get names of arguments, which may or may not have
                 # been called as keywords.
@@ -131,7 +131,7 @@ def _metadata_to_dict(arg):
     if isinstance(arg, str):
         # add the key, no value
         return {arg: None}
-    elif isinstance(arg, ccdproc.Keyword):
+    elif isinstance(arg, ccdprocx.Keyword):
         return {arg.name: arg.value}
     else:
         return arg

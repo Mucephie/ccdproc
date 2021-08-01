@@ -1,7 +1,7 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
 """
-Define utility functions and classes for ccdproc
+Define utility functions and classes for ccdprocx
 """
 
 __all__ = ["slice_from_string"]

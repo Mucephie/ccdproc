@@ -9,9 +9,9 @@ from astropy.nddata import StdDevUncertainty
 from astropy import units as u
 
 # cosmicray_lacosmic,
-from ccdproc.core import (cosmicray_median,
+from ccdprocx.core import (cosmicray_median,
                     background_deviation_box, background_deviation_filter)
-from ccdproc.tests.pytest_fixtures import ccd_data as ccd_data_func
+from ccdprocx.tests.pytest_fixtures import ccd_data as ccd_data_func
 
 
 DATA_SCALE = 5.3

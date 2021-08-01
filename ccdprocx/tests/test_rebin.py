@@ -8,8 +8,8 @@ from astropy.nddata import StdDevUncertainty
 from astropy.tests.helper import catch_warnings
 from astropy.utils.exceptions import AstropyDeprecationWarning
 
-from ccdproc.core import rebin
-from ccdproc.tests.pytest_fixtures import ccd_data as ccd_data_func
+from ccdprocx.core import rebin
+from ccdprocx.tests.pytest_fixtures import ccd_data as ccd_data_func
 
 
 # test rebinning ndarray

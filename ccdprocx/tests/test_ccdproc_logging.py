@@ -5,9 +5,9 @@ import numpy as np
 from astropy.nddata import CCDData
 import pytest
 
-from ccdproc import subtract_bias, create_deviation, Keyword, trim_image
-from ccdproc.core import _short_names
-from ccdproc.tests.pytest_fixtures import ccd_data as ccd_data_func
+from ccdprocx import subtract_bias, create_deviation, Keyword, trim_image
+from ccdprocx.core import _short_names
+from ccdprocx.tests.pytest_fixtures import ccd_data as ccd_data_func
 
 
 @pytest.mark.parametrize('key', [

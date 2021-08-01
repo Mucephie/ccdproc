@@ -5,7 +5,7 @@ import numpy as np
 
 import pytest
 
-from ccdproc.core import ccdmask
+from ccdprocx.core import ccdmask
 from astropy.nddata import CCDData
 
 

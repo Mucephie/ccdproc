@@ -5,8 +5,8 @@ import pytest
 
 import astropy.units as u
 
-from ccdproc.core import create_deviation, gain_correct, Keyword
-from ccdproc.tests.pytest_fixtures import ccd_data as ccd_data_func
+from ccdprocx.core import create_deviation, gain_correct, Keyword
+from ccdprocx.tests.pytest_fixtures import ccd_data as ccd_data_func
 
 
 # tests for gain

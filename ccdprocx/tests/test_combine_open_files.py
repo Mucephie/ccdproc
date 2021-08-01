@@ -7,7 +7,7 @@ import pytest
 
 run_dir = Path(__file__).parent
 
-# Why? So that we get up to the file above ccdproc, so that in the
+# Why? So that we get up to the file above ccdprocx, so that in the
 # subprocess we can add that direction to sys.path.
 subprocess_dir = run_dir.parent.parent
 

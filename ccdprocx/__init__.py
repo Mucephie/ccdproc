@@ -1,8 +1,9 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 """
-The ccdproc package is a collection of code that will be helpful in basic CCD
+The ccdprocx package is a collection of code that will be helpful in basic CCD
 processing. These steps will allow reduction of basic CCD data as either a
 stand-alone processing or as part of a pipeline.
+ccdprocx removed the astroscrappy dependency.
 """
 
 # Affiliated packages may add whatever they like to this file, but
@@ -20,7 +21,7 @@ from astropy import config as _config
 
 
 class Conf(_config.ConfigNamespace):
-    """Configuration parameters for ccdproc."""
+    """Configuration parameters for ccdprocx."""
     auto_logging = _config.ConfigItem(
         True,
         'Whether to automatically log operations to metadata'

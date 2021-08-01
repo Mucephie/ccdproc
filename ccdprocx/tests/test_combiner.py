@@ -9,10 +9,10 @@ import pytest
 from astropy.utils.data import get_pkg_data_filename
 from astropy.nddata import CCDData
 
-from ccdproc.combiner import (Combiner, combine, _calculate_step_sizes,
+from ccdprocx.combiner import (Combiner, combine, _calculate_step_sizes,
                               _default_std, sigma_func)
-from ccdproc.image_collection import ImageFileCollection
-from ccdproc.tests.pytest_fixtures import ccd_data as ccd_data_func
+from ccdprocx.image_collection import ImageFileCollection
+from ccdprocx.tests.pytest_fixtures import ccd_data as ccd_data_func
 
 
 # test that the Combiner raises error if empty
@@ -219,7 +219,7 @@ def test_combiner_sigmaclip_low():
 @pytest.mark.parametrize('threshold', [1, 10])
 def test_combiner_sigma_clip_use_astropy_same_result(threshold):
     # If we turn on use_astropy and make no other changes we should get exactly
-    # the same result as if we use ccdproc sigma_clipping
+    # the same result as if we use ccdprocx sigma_clipping
     ccd_list = [ccd_data_func(rng_seed=seed + 1) for seed in range(10)]
     c_ccdp = Combiner(ccd_list)
     c_apy = Combiner(ccd_list)
@@ -386,7 +386,7 @@ def test_combiner_mask_sum():
 
 # test combiner convenience function reads fits file and combine as expected
 def test_combine_average_fitsimages():
-    fitsfile = get_pkg_data_filename('data/a8280271.fits', package='ccdproc.tests')
+    fitsfile = get_pkg_data_filename('data/a8280271.fits', package='ccdprocx.tests')
     ccd = CCDData.read(fitsfile, unit=u.adu)
     ccd_list = [ccd] * 3
     c = Combiner(ccd_list)

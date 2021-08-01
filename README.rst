@@ -31,7 +31,7 @@ in this source distribution.
 
 
 Documentation is at `ccdproc.readthedocs.io
-<https://ccdproc.readthedocs.io/en/latest/>`_
+<https://ccdprocx.readthedocs.io/en/latest/>`_
 
 An extensive `tutorial`_ is currently in development.
 

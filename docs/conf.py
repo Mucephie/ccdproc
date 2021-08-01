@@ -106,7 +106,7 @@ release = ver
 
 html_theme_options = {
     'logotext1': 'ccd',   # white, semi-bold
-    'logotext2': 'proc',  # orange, light
+    'logotext2': 'procX',  # orange, light
     'logotext3': ':docs'   # white, light
 }
 
@@ -172,7 +172,7 @@ if eval(setup_cfg.get('edit_on_github')):
     edit_on_github_doc_root = "docs"
 
 # -- Resolving issue number to links in changelog -----------------------------
-github_issues_url = 'https://github.com/astropy/ccdproc/issues/'
+github_issues_url = 'https://github.com/mucephie/ccdprocx/issues/'
 
 # -- Turn on nitpicky mode for sphinx (to warn about references not found) ----
 #

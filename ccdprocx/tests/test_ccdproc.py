@@ -16,12 +16,12 @@ from numpy.testing import assert_array_equal
 import pytest
 import skimage
 # cosmicray_lacosmic,
-from ccdproc.core import (
+from ccdprocx.core import (
     ccd_process, cosmicray_median,  create_deviation,
     flat_correct, gain_correct, subtract_bias, subtract_dark, subtract_overscan,
     transform_image, trim_image, wcs_project, Keyword)
-from ccdproc.core import _blkavg
-from ccdproc.tests.pytest_fixtures import ccd_data as ccd_data_func
+from ccdprocx.core import _blkavg
+from ccdprocx.tests.pytest_fixtures import ccd_data as ccd_data_func
 
 try:
     from ..core import block_reduce, block_average, block_replicate

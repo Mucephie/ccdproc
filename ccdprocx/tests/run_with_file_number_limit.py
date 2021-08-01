@@ -10,10 +10,10 @@ import psutil
 import numpy as np
 from astropy.io import fits
 
-# This bit of hackery ensures that we can see ccdproc from within
+# This bit of hackery ensures that we can see ccdprocx from within
 # the test suite
 sys.path.append(str(Path().cwd()))
-from ccdproc import combine
+from ccdprocx import combine
 
 # Do not combine these into one statement. When all references are lost
 # to a TemporaryDirectory the directory is automatically deleted. _TMPDIR
@@ -84,7 +84,7 @@ def open_files_as_mmap(kind):
 
 def open_files_ccdproc_combine_chunk(kind):
     """
-    Open files indirectly as part of ccdproc.combine, ensuring that the
+    Open files indirectly as part of ccdprocx.combine, ensuring that the
     task is broken into chunks.
     """
     global combo
@@ -103,7 +103,7 @@ def open_files_ccdproc_combine_chunk(kind):
 
 def open_files_ccdproc_combine_nochunk(kind):
     """
-    Open files indirectly as part of ccdproc.combine, ensuring that the
+    Open files indirectly as part of ccdprocx.combine, ensuring that the
     task is not broken into chunks.
     """
     global combo
@@ -145,7 +145,7 @@ def run_with_limit(n, kind='fits', size=None, overhead=6,
     kind : one of 'fits', 'plain', optional
         The type of file to generate. The plain files are intended mainly for
         testing this script, while the FITS files are for testing
-        ccdproc.combine.
+        ccdprocx.combine.
 
     size : int, optional
         Size of file to create. If the kind is 'plain; this is the size

@@ -1,11 +1,11 @@
 API Reference
 =============
 
-.. automodapi:: ccdproc
+.. automodapi:: ccdprocx
    :skip: CCDData
    :skip: fits_ccddata_writer
    :skip: fits_ccddata_reader
 
-.. automodapi:: ccdproc.utils.slices
+.. automodapi:: ccdprocx.utils.slices
 
-.. _GitHub repo: https://github.com/astropy/ccdproc
+.. _GitHub repo: https://github.com/mucephie/ccdprocx

@@ -1,6 +1,6 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
-"""This module implements the base CCDPROC functions"""
+"""This module implements the base CCDPROCx functions"""
 
 import math
 import numbers
@@ -40,7 +40,7 @@ __all__ = ['background_deviation_box', 'background_deviation_filter',
 _short_names = {
     'background_deviation_box': 'bakdevbx',
     'background_deviation_filter': 'bakdfilt',
-    'ccd_process': 'ccdproc',
+    'ccd_process': 'ccdprocx',
     'cosmicray_median': 'crmedian',
     'create_deviation': 'creatvar',
     'flat_correct': 'flatcor',
@@ -155,7 +155,7 @@ def ccd_process(ccd, oscan=None, trim=None, error=False, master_bias=None,
         ``dark_exposure``.
         Default is ``None``.
 
-    exposure_key : `~ccdproc.Keyword`, str or None, optional
+    exposure_key : `~ccdprocx.Keyword`, str or None, optional
         Name of key in image metadata that contains exposure time.
         Default is ``None``.
 
@@ -184,7 +184,7 @@ def ccd_process(ccd, oscan=None, trim=None, error=False, master_bias=None,
         >>> import numpy as np
         >>> from astropy import units as u
         >>> from astropy.nddata import CCDData
-        >>> from ccdproc import ccd_process
+        >>> from ccdprocx import ccd_process
         >>> ccd = CCDData(np.ones([100, 100]), unit=u.adu)
         >>> nccd = ccd_process(ccd, oscan='[1:10,1:100]',
         ...                    trim='[10:100, 1:100]', error=False,
@@ -507,7 +507,7 @@ def trim_image(ccd, fits_section=None):
 
     fits_section : str or None, optional
         Region of ``ccd`` from which the overscan is extracted; see
-        `~ccdproc.subtract_overscan` for details.
+        `~ccdprocx.subtract_overscan` for details.
         Default is ``None``.
 
     {log}
@@ -618,7 +618,7 @@ def subtract_dark(ccd, master, dark_exposure=None, data_exposure=None,
         ``dark_exposure``.
         Default is ``None``.
 
-    exposure_time : str or `~ccdproc.Keyword` or None, optional
+    exposure_time : str or `~ccdprocx.Keyword` or None, optional
         Name of key in image metadata that contains exposure time.
         Default is ``None``.
 
@@ -711,7 +711,7 @@ def gain_correct(ccd, gain, gain_unit=None):
     ccd : `~astropy.nddata.CCDData`
       Data to have gain corrected.
 
-    gain : `~astropy.units.Quantity` or `~ccdproc.Keyword`
+    gain : `~astropy.units.Quantity` or `~ccdprocx.Keyword`
       gain value for the image expressed in electrons per adu.
 
     gain_unit : `~astropy.units.Unit` or None, optional
@@ -846,7 +846,7 @@ def transform_image(ccd, transform_func, **kwargs):
     `scipy.ndimage.shift`::
 
         >>> from scipy.ndimage.interpolation import shift
-        >>> from ccdproc import transform_image
+        >>> from ccdprocx import transform_image
         >>> transformed = transform_image(arr1, shift, shift=(5.5, 8.1))
     """
     # check that it is a ccddata object
@@ -1935,32 +1935,32 @@ def bitfield_to_boolean_mask(bitfield, ignore_bits=0, flip_bits=None):
     function can be used by default to create a boolean mask wherever any bit
     flag is set::
 
-        >>> import ccdproc
+        >>> import ccdprocx
         >>> import numpy as np
-        >>> ccdproc.bitfield_to_boolean_mask(np.arange(8))
+        >>> ccdprocx.bitfield_to_boolean_mask(np.arange(8))
         array([False,  True,  True,  True,  True,  True,  True,  True]...)
 
     To ignore all bit flags ``ignore_bits=None`` can be used::
 
-        >>> ccdproc.bitfield_to_boolean_mask(np.arange(8), ignore_bits=None)
+        >>> ccdprocx.bitfield_to_boolean_mask(np.arange(8), ignore_bits=None)
         array([False, False, False, False, False, False, False, False]...)
 
     To ignore only specific bit flags one can use a ``list`` of bits flags to
     ignore::
 
-        >>> ccdproc.bitfield_to_boolean_mask(np.arange(8), ignore_bits=[1, 4])
+        >>> ccdprocx.bitfield_to_boolean_mask(np.arange(8), ignore_bits=[1, 4])
         array([False, False,  True,  True, False, False,  True,  True]...)
 
     There are some equivalent ways::
 
         >>> # pass in the sum of the "ignore_bits" directly
-        >>> ccdproc.bitfield_to_boolean_mask(np.arange(8), ignore_bits=5)  # 1 + 4
+        >>> ccdprocx.bitfield_to_boolean_mask(np.arange(8), ignore_bits=5)  # 1 + 4
         array([False, False,  True,  True, False, False,  True,  True]...)
         >>> # use a comma seperated string of integers
-        >>> ccdproc.bitfield_to_boolean_mask(np.arange(8), ignore_bits='1, 4')
+        >>> ccdprocx.bitfield_to_boolean_mask(np.arange(8), ignore_bits='1, 4')
         array([False, False,  True,  True, False, False,  True,  True]...)
         >>> # use a + seperated string of integers
-        >>> ccdproc.bitfield_to_boolean_mask(np.arange(8), ignore_bits='1+4')
+        >>> ccdprocx.bitfield_to_boolean_mask(np.arange(8), ignore_bits='1+4')
         array([False, False,  True,  True, False, False,  True,  True]...)
 
     Instead of directly specifying the **bits flags to ignore** one can also
@@ -1969,14 +1969,14 @@ def bitfield_to_boolean_mask(bitfield, ignore_bits=0, flip_bits=None):
     ``ignore_bits`` one can set ``flip_bits=True``)::
 
         >>> # ignore all bit flags except the one for 2.
-        >>> ccdproc.bitfield_to_boolean_mask(np.arange(8), ignore_bits='~(2)')
+        >>> ccdprocx.bitfield_to_boolean_mask(np.arange(8), ignore_bits='~(2)')
         array([False, False,  True,  True, False, False,  True,  True]...)
         >>> # ignore all bit flags except the one for 1, 8 and 32.
-        >>> ccdproc.bitfield_to_boolean_mask(np.arange(8), ignore_bits='~(1, 8, 32)')
+        >>> ccdprocx.bitfield_to_boolean_mask(np.arange(8), ignore_bits='~(1, 8, 32)')
         array([False,  True, False,  True, False,  True, False,  True]...)
 
         >>> # Equivalent for a list using flip_bits.
-        >>> ccdproc.bitfield_to_boolean_mask(np.arange(8), ignore_bits=[1, 8, 32], flip_bits=True)
+        >>> ccdprocx.bitfield_to_boolean_mask(np.arange(8), ignore_bits=[1, 8, 32], flip_bits=True)
         array([False,  True, False,  True, False,  True, False,  True]...)
 
     """

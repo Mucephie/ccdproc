@@ -12,13 +12,13 @@ from astropy.io import fits
 from astropy.stats import median_absolute_deviation
 from astropy.nddata import CCDData
 
-# This bit of hackery ensures that we can see ccdproc from within
+# This bit of hackery ensures that we can see ccdprocx from within
 # the test suite
 sys.path.append(str(Path().cwd()))
-from ccdproc import combine, ImageFileCollection
+from ccdprocx import combine, ImageFileCollection
 
 try:
-    from ccdproc.combiner import _calculate_size_of_image
+    from ccdprocx.combiner import _calculate_size_of_image
 except ImportError:
     def _calculate_size_of_image(ccd,
                                  combine_uncertainty_function):
@@ -105,7 +105,7 @@ def run_memory_profile(n_files, sampling_interval, size=None, sigma_clip=False,
 
     combine_method : str, optional
         Should be one of the combine methods accepted by
-        ccdproc.combine
+        ccdprocx.combine
 
     memory_limit : int, optional
         Cap on memory use during image combination.

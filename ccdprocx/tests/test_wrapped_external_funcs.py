@@ -6,7 +6,7 @@ from astropy.nddata import StdDevUncertainty, CCDData
 
 from scipy import ndimage
 
-from ccdproc import core
+from ccdprocx import core
 
 
 def test_medianfilter_correct():

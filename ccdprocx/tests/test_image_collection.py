@@ -20,7 +20,7 @@ from astropy.io.fits.verify import VerifyWarning
 
 from astropy.nddata import CCDData
 
-from ccdproc.image_collection import ImageFileCollection
+from ccdprocx.image_collection import ImageFileCollection
 
 _filters = []
 _original_dir = ''

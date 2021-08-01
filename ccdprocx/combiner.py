@@ -81,7 +81,7 @@ class Combiner:
         >>> import numpy as np
         >>> import astropy.units as u
         >>> from astropy.nddata import CCDData
-        >>> from ccdproc import Combiner
+        >>> from ccdprocx import Combiner
         >>> ccddata1 = CCDData(np.ones((4, 4)), unit=u.adu)
         >>> ccddata2 = CCDData(np.zeros((4, 4)), unit=u.adu)
         >>> ccddata3 = CCDData(np.ones((4, 4)), unit=u.adu)
@@ -189,7 +189,7 @@ class Combiner:
             Images are multiplied by scaling prior to combining
             them. Scaling may be either a function, which will be applied to
             each image to determine the scaling factor, or a list or array
-            whose length is the number of images in the `~ccdproc.Combiner`.
+            whose length is the number of images in the `~ccdprocx.Combiner`.
         """
         return self._scaling
 
@@ -338,7 +338,7 @@ class Combiner:
             from ``low_thresh`` and ``high_thresh``. Any remaining keywords are passed
             in to astropy's `~astropy.stats.sigma_clip`. By default, the
             number of iterations and other settings will be made to reproduce
-            the behavior of ccdproc's ``sigma_clipping``.
+            the behavior of ccdprocx's ``sigma_clipping``.
         """
         if use_astropy:
             copy = kwd.get('copy', False)
@@ -430,7 +430,7 @@ class Combiner:
 
         uncertainty_func : function, optional
             Function to calculate uncertainty.
-            Defaults is `~ccdproc.sigma_func`.
+            Defaults is `~ccdprocx.sigma_func`.
 
         Returns
         -------
@@ -799,7 +799,7 @@ def combine(img_list, output_file=None,
 
     dtype : str or `numpy.dtype` or None, optional
         The intermediate and resulting ``dtype`` for the combined CCDs. See
-        `ccdproc.Combiner`. If ``None`` this is set to ``float64``.
+        `ccdprocx.Combiner`. If ``None`` this is set to ``float64``.
         Default is ``None``.
 
     combine_uncertainty_function : callable, None, optional
