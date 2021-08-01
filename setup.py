@@ -45,7 +45,7 @@ if 'build_docs' in sys.argv or 'build_sphinx' in sys.argv:
 # setup_requires and install_requires since these are determined
 # programmatically.
 
-setup(use_scm_version={'write_to': Path('ccdprocx') / 'version.py'})
+# setup(use_scm_version={'write_to': Path('ccdprocx') / 'version.py'})
 
 # If compiled extensions are added to the package, add the argument below
 # to setup:
