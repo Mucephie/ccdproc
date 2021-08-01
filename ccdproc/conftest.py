@@ -56,7 +56,7 @@ TESTED_VERSIONS[packagename] = version
 
 try:
     PYTEST_HEADER_MODULES['Astropy'] = 'astropy'
-    PYTEST_HEADER_MODULES['astroscrappy'] = 'astroscrappy'
+    # PYTEST_HEADER_MODULES['astroscrappy'] = 'astroscrappy' #=========================================================================
     PYTEST_HEADER_MODULES['reproject'] = 'reproject'
     del PYTEST_HEADER_MODULES['h5py']
 except KeyError:

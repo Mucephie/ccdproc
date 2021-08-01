@@ -5,13 +5,13 @@ Installation
 Requirements
 ============
 
-Ccdproc has the following requirements:
+CCDprocX has the following requirements:
 
 - `Astropy`_ v2.0 or later
 - `NumPy <http://www.numpy.org/>`_
 - `SciPy <https://www.scipy.org/>`_
 - `scikit-image <http://scikit-image.org/>`_
-- `astroscrappy <https://github.com/astropy/astroscrappy>`_
+- XXX `astroscrappy <https://github.com/astropy/astroscrappy>`_ XXX
 - `reproject  <https://github.com/astrofrog/reproject>`_
 
 One easy way to get these dependencies is to install a python distribution
@@ -23,14 +23,14 @@ Installing ccdproc
 Using pip
 -------------
 
-To install ccdproc with `pip <https://pip.pypa.io/en/latest/>`_, simply run::
+To install ccdprocx with `pip <https://pip.pypa.io/en/latest/>`_, simply run::
 
-    pip install ccdproc
+    pip install ccdprocx
 
 Using conda
 -------------
 
-To install ccdproc with `anaconda`_, run::
+Currently there is no conda package version of CCDprocX. To install ccdproc with `anaconda`_, run::
 
     conda install -c conda-forge ccdproc
 

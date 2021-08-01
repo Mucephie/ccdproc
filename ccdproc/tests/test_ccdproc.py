@@ -15,9 +15,9 @@ import astropy
 from numpy.testing import assert_array_equal
 import pytest
 import skimage
-
+# cosmicray_lacosmic,
 from ccdproc.core import (
-    ccd_process, cosmicray_median, cosmicray_lacosmic, create_deviation,
+    ccd_process, cosmicray_median,  create_deviation,
     flat_correct, gain_correct, subtract_bias, subtract_dark, subtract_overscan,
     transform_image, trim_image, wcs_project, Keyword)
 from ccdproc.core import _blkavg
@@ -787,13 +787,13 @@ def test_cosmicray_median_does_not_change_input():
     assert original.unit == ccd_data.unit
 
 
-def test_cosmicray_lacosmic_does_not_change_input():
-    ccd_data = ccd_data_func()
-    original = ccd_data.copy()
-    error = np.zeros_like(ccd_data)
-    ccd = cosmicray_lacosmic(ccd_data)
-    np.testing.assert_array_equal(original.data, ccd_data.data)
-    assert original.unit == ccd_data.unit
+# def test_cosmicray_lacosmic_does_not_change_input():
+#     ccd_data = ccd_data_func()
+#     original = ccd_data.copy()
+#     error = np.zeros_like(ccd_data)
+#     ccd = cosmicray_lacosmic(ccd_data)
+#     np.testing.assert_array_equal(original.data, ccd_data.data)
+#     assert original.unit == ccd_data.unit
 
 
 def test_flat_correct_does_not_change_input():

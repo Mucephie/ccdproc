@@ -1,4 +1,4 @@
-ccdproc
+ccdprocX
 =======
 
 .. image:: https://github.com/astropy/ccdproc/workflows/CI/badge.svg
@@ -11,6 +11,14 @@ ccdproc
 .. image:: https://zenodo.org/badge/13384007.svg
    :target: https://zenodo.org/badge/latestdoi/13384007
 
+
+CCDprocX is a fork of CCDproc that aims to remove the astroscrappy dependency for obvious reasons including its current incompatability 
+with python 3.9, the fact it requires non-trivial to install C++ build dependencies, and even when those tools are installed astroscrappy 
+may just decide not to build and instead throw up a bunch of red text in the terminal, probably out of spite. When installed, astroscrappy 
+is great and effective but CCDprocX exists for those who cannot get it installed.
+
+ccdproc
+=======
 
 Ccdproc is is an affiliated package for the AstroPy package for basic data
 reductions of CCD images.   The ccdproc  package provides many of the

@@ -26,8 +26,10 @@ from .extern.bitfield import bitfield_to_boolean_mask as _bitfield_to_boolean_ma
 
 logger = logging.getLogger(__name__)
 
+# 'cosmicray_lacosmic',
+
 __all__ = ['background_deviation_box', 'background_deviation_filter',
-           'ccd_process', 'cosmicray_median', 'cosmicray_lacosmic',
+           'ccd_process', 'cosmicray_median', 
            'create_deviation', 'flat_correct', 'gain_correct', 'rebin',
            'sigma_func', 'subtract_bias', 'subtract_dark', 'subtract_overscan',
            'transform_image', 'trim_image', 'wcs_project', 'Keyword',
@@ -1304,252 +1306,292 @@ def median_filter(data, *args, **kwargs):
         return ndimage.median_filter(data, *args, **kwargs)
 
 
-def cosmicray_lacosmic(ccd, sigclip=4.5, sigfrac=0.3,
-                       objlim=5.0, gain=1.0, readnoise=6.5,
-                       satlevel=65535.0, pssl=0.0, niter=4,
-                       sepmed=True, cleantype='meanmask', fsmode='median',
-                       psfmodel='gauss', psffwhm=2.5, psfsize=7,
-                       psfk=None, psfbeta=4.765, verbose=False,
-                       gain_apply=True):
-    r"""
-    Identify cosmic rays through the L.A. Cosmic technique. The L.A. Cosmic
-    technique identifies cosmic rays by identifying pixels based on a variation
-    of the Laplacian edge detection. The algorithm is an implementation of the
-    code describe in van Dokkum (2001) [1]_ as implemented by McCully (2014)
-    [2]_. If you use this algorithm, please cite these two works.
 
 
 
-    Parameters
-    ----------
-    ccd : `~astropy.nddata.CCDData` or `numpy.ndarray`
-        Data to have cosmic ray cleaned.
 
-    gain_apply : bool, optional
-        If ``True``, **return gain-corrected data**, with correct units,
-        otherwise do not gain-correct the data. Default is ``True`` to
-        preserve backwards compatibility.
 
-    sigclip : float, optional
-        Laplacian-to-noise limit for cosmic ray detection. Lower values will
-        flag more pixels as cosmic rays. Default: 4.5.
 
-    sigfrac : float, optional
-        Fractional detection limit for neighboring pixels. For cosmic ray
-        neighbor pixels, a Laplacian-to-noise detection limit of
-        sigfrac * sigclip will be used. Default: 0.3.
 
-    objlim : float, optional
-        Minimum contrast between Laplacian image and the fine structure image.
-        Increase this value if cores of bright stars are flagged as cosmic
-        rays. Default: 5.0.
 
-    pssl : float, optional
-        Previously subtracted sky level in ADU. We always need to work in
-        electrons for cosmic ray detection, so we need to know the sky level
-        that has been subtracted so we can add it back in. Default: 0.0.
 
-    gain : float or `~astropy.units.Quantity`, optional
-        Gain of the image (electrons / ADU). We always need to work in
-        electrons for cosmic ray detection. Default: 1.0
 
-    readnoise : float, optional
-        Read noise of the image (electrons). Used to generate the noise model
-        of the image. Default: 6.5.
 
-    satlevel : float, optional
-        Saturation level of the image (electrons). This value is used to
-        detect saturated stars and pixels at or above this level are added to
-        the mask. Default: 65535.0.
+# #====================================================================================================================================
+# def cosmicray_lacosmic(ccd, sigclip=4.5, sigfrac=0.3,
+#                        objlim=5.0, gain=1.0, readnoise=6.5,
+#                        satlevel=65535.0, pssl=0.0, niter=4,
+#                        sepmed=True, cleantype='meanmask', fsmode='median',
+#                        psfmodel='gauss', psffwhm=2.5, psfsize=7,
+#                        psfk=None, psfbeta=4.765, verbose=False,
+#                        gain_apply=True):
+#     r"""
+#     Identify cosmic rays through the L.A. Cosmic technique. The L.A. Cosmic
+#     technique identifies cosmic rays by identifying pixels based on a variation
+#     of the Laplacian edge detection. The algorithm is an implementation of the
+#     code describe in van Dokkum (2001) [1]_ as implemented by McCully (2014)
+#     [2]_. If you use this algorithm, please cite these two works.
 
-    niter : int, optional
-        Number of iterations of the LA Cosmic algorithm to perform. Default: 4.
 
-    sepmed : bool, optional
-        Use the separable median filter instead of the full median filter.
-        The separable median is not identical to the full median filter, but
-        they are approximately the same, the separable median filter is
-        significantly faster, and still detects cosmic rays well. Note, this is
-        a performance feature, and not part of the original L.A. Cosmic.
-        Default: True
 
-    cleantype : str, optional
-        Set which clean algorithm is used:
+#     Parameters
+#     ----------
+#     ccd : `~astropy.nddata.CCDData` or `numpy.ndarray`
+#         Data to have cosmic ray cleaned.
 
-        - ``"median"``: An unmasked 5x5 median filter.
-        - ``"medmask"``: A masked 5x5 median filter.
-        - ``"meanmask"``: A masked 5x5 mean filter.
-        - ``"idw"``: A masked 5x5 inverse distance weighted interpolation.
+#     gain_apply : bool, optional
+#         If ``True``, **return gain-corrected data**, with correct units,
+#         otherwise do not gain-correct the data. Default is ``True`` to
+#         preserve backwards compatibility.
 
-        Default: ``"meanmask"``.
+#     sigclip : float, optional
+#         Laplacian-to-noise limit for cosmic ray detection. Lower values will
+#         flag more pixels as cosmic rays. Default: 4.5.
 
-    fsmode : str, optional
-        Method to build the fine structure image:
+#     sigfrac : float, optional
+#         Fractional detection limit for neighboring pixels. For cosmic ray
+#         neighbor pixels, a Laplacian-to-noise detection limit of
+#         sigfrac * sigclip will be used. Default: 0.3.
 
-        - ``"median"``: Use the median filter in the standard LA Cosmic \
-          algorithm.
-        - ``"convolve"``: Convolve the image with the psf kernel to calculate \
-          the fine structure image.
+#     objlim : float, optional
+#         Minimum contrast between Laplacian image and the fine structure image.
+#         Increase this value if cores of bright stars are flagged as cosmic
+#         rays. Default: 5.0.
 
-        Default: ``"median"``.
+#     pssl : float, optional
+#         Previously subtracted sky level in ADU. We always need to work in
+#         electrons for cosmic ray detection, so we need to know the sky level
+#         that has been subtracted so we can add it back in. Default: 0.0.
 
-    psfmodel : str, optional
-        Model to use to generate the psf kernel if fsmode == 'convolve' and
-        psfk is None. The current choices are Gaussian and Moffat profiles:
+#     gain : float or `~astropy.units.Quantity`, optional
+#         Gain of the image (electrons / ADU). We always need to work in
+#         electrons for cosmic ray detection. Default: 1.0
 
-        - ``"gauss"`` and ``"moffat"`` produce circular PSF kernels.
-        - The ``"gaussx"`` and ``"gaussy"`` produce Gaussian kernels in the x \
-          and y directions respectively.
+#     readnoise : float, optional
+#         Read noise of the image (electrons). Used to generate the noise model
+#         of the image. Default: 6.5.
 
-        Default: ``"gauss"``.
+#     satlevel : float, optional
+#         Saturation level of the image (electrons). This value is used to
+#         detect saturated stars and pixels at or above this level are added to
+#         the mask. Default: 65535.0.
 
-    psffwhm : float, optional
-        Full Width Half Maximum of the PSF to use to generate the kernel.
-        Default: 2.5.
+#     niter : int, optional
+#         Number of iterations of the LA Cosmic algorithm to perform. Default: 4.
 
-    psfsize : int, optional
-        Size of the kernel to calculate. Returned kernel will have size
-        psfsize x psfsize. psfsize should be odd. Default: 7.
+#     sepmed : bool, optional
+#         Use the separable median filter instead of the full median filter.
+#         The separable median is not identical to the full median filter, but
+#         they are approximately the same, the separable median filter is
+#         significantly faster, and still detects cosmic rays well. Note, this is
+#         a performance feature, and not part of the original L.A. Cosmic.
+#         Default: True
 
-    psfk : `numpy.ndarray` (with float dtype) or None, optional
-        PSF kernel array to use for the fine structure image if
-        ``fsmode == 'convolve'``. If None and ``fsmode == 'convolve'``, we
-        calculate the psf kernel using ``psfmodel``. Default: None.
+#     cleantype : str, optional
+#         Set which clean algorithm is used:
 
-    psfbeta : float, optional
-        Moffat beta parameter. Only used if ``fsmode=='convolve'`` and
-        ``psfmodel=='moffat'``. Default: 4.765.
+#         - ``"median"``: An unmasked 5x5 median filter.
+#         - ``"medmask"``: A masked 5x5 median filter.
+#         - ``"meanmask"``: A masked 5x5 mean filter.
+#         - ``"idw"``: A masked 5x5 inverse distance weighted interpolation.
 
-    verbose : bool, optional
-        Print to the screen or not. Default: False.
+#         Default: ``"meanmask"``.
 
-    Notes
-    -----
-    Implementation of the cosmic ray identification L.A.Cosmic:
-    http://www.astro.yale.edu/dokkum/lacosmic/
+#     fsmode : str, optional
+#         Method to build the fine structure image:
 
-    Returns
-    -------
-    nccd : `~astropy.nddata.CCDData` or `numpy.ndarray`
-        An object of the same type as ccd is returned. If it is a
-        `~astropy.nddata.CCDData`, the mask attribute will also be updated with
-        areas identified with cosmic rays masked. **By default, the image is
-        multiplied by the gain.** You can control this behavior with the
-        ``gain_apply`` argument.
+#         - ``"median"``: Use the median filter in the standard LA Cosmic \
+#           algorithm.
+#         - ``"convolve"``: Convolve the image with the psf kernel to calculate \
+#           the fine structure image.
 
-    crmask : `numpy.ndarray`
-        If an `numpy.ndarray` is provided as ccd, a boolean ndarray with the
-        cosmic rays identified will also be returned.
+#         Default: ``"median"``.
 
-    References
-    ----------
-    .. [1] van Dokkum, P; 2001, "Cosmic-Ray Rejection by Laplacian Edge
-       Detection". The Publications of the Astronomical Society of the
-       Pacific, Volume 113, Issue 789, pp. 1420-1427.
-       doi: 10.1086/323894
+#     psfmodel : str, optional
+#         Model to use to generate the psf kernel if fsmode == 'convolve' and
+#         psfk is None. The current choices are Gaussian and Moffat profiles:
 
-    .. [2] McCully, C., 2014, "Astro-SCRAPPY",
-       https://github.com/astropy/astroscrappy
+#         - ``"gauss"`` and ``"moffat"`` produce circular PSF kernels.
+#         - The ``"gaussx"`` and ``"gaussy"`` produce Gaussian kernels in the x \
+#           and y directions respectively.
 
-    Examples
-    --------
-    1) Given an numpy.ndarray object, the syntax for running
-       cosmicrar_lacosmic would be:
+#         Default: ``"gauss"``.
 
-       >>> newdata, mask = cosmicray_lacosmic(data, sigclip=5)  #doctest: +SKIP
+#     psffwhm : float, optional
+#         Full Width Half Maximum of the PSF to use to generate the kernel.
+#         Default: 2.5.
 
-       where the error is an array that is the same shape as data but
-       includes the pixel error. This would return a data array, newdata,
-       with the bad pixels replaced by the local median from a box of 11
-       pixels; and it would return a mask indicating the bad pixels.
+#     psfsize : int, optional
+#         Size of the kernel to calculate. Returned kernel will have size
+#         psfsize x psfsize. psfsize should be odd. Default: 7.
 
-    2) Given an `~astropy.nddata.CCDData` object with an uncertainty frame, the syntax
-       for running cosmicrar_lacosmic would be:
+#     psfk : `numpy.ndarray` (with float dtype) or None, optional
+#         PSF kernel array to use for the fine structure image if
+#         ``fsmode == 'convolve'``. If None and ``fsmode == 'convolve'``, we
+#         calculate the psf kernel using ``psfmodel``. Default: None.
 
-       >>> newccd = cosmicray_lacosmic(ccd, sigclip=5)   # doctest: +SKIP
+#     psfbeta : float, optional
+#         Moffat beta parameter. Only used if ``fsmode=='convolve'`` and
+#         ``psfmodel=='moffat'``. Default: 4.765.
 
-       The newccd object will have bad pixels in its data array replace and the
-       mask of the object will be created if it did not previously exist or be
-       updated with the detected cosmic rays.
-    """
-    from astroscrappy import detect_cosmics
+#     verbose : bool, optional
+#         Print to the screen or not. Default: False.
 
-    # If we didn't get a quantity, put them in, with unit specified by the
-    # documentation above.
-    if not isinstance(gain, u.Quantity):
-        # Gain will change the value, so use the proper units
-        gain = gain * u.electron / u.adu
+#     Notes
+#     -----
+#     Implementation of the cosmic ray identification L.A.Cosmic:
+#     http://www.astro.yale.edu/dokkum/lacosmic/
 
-    # Set the units of readnoise to electrons, as specified in the
-    # documentation, if no unit is present.
-    if not isinstance(readnoise, u.Quantity):
-        readnoise = readnoise * u.electron
+#     Returns
+#     -------
+#     nccd : `~astropy.nddata.CCDData` or `numpy.ndarray`
+#         An object of the same type as ccd is returned. If it is a
+#         `~astropy.nddata.CCDData`, the mask attribute will also be updated with
+#         areas identified with cosmic rays masked. **By default, the image is
+#         multiplied by the gain.** You can control this behavior with the
+#         ``gain_apply`` argument.
 
-    if isinstance(ccd, np.ndarray):
-        data = ccd
+#     crmask : `numpy.ndarray`
+#         If an `numpy.ndarray` is provided as ccd, a boolean ndarray with the
+#         cosmic rays identified will also be returned.
 
-        crmask, cleanarr = detect_cosmics(
-            data, inmask=None, sigclip=sigclip,
-            sigfrac=sigfrac, objlim=objlim, gain=gain.value,
-            readnoise=readnoise.value, satlevel=satlevel, pssl=pssl,
-            niter=niter, sepmed=sepmed, cleantype=cleantype,
-            fsmode=fsmode, psfmodel=psfmodel, psffwhm=psffwhm,
-            psfsize=psfsize, psfk=psfk, psfbeta=psfbeta,
-            verbose=verbose)
+#     References
+#     ----------
+#     .. [1] van Dokkum, P; 2001, "Cosmic-Ray Rejection by Laplacian Edge
+#        Detection". The Publications of the Astronomical Society of the
+#        Pacific, Volume 113, Issue 789, pp. 1420-1427.
+#        doi: 10.1086/323894
 
-        if not gain_apply and gain != 1.0:
-            cleanarr = cleanarr / gain
-        return cleanarr, crmask
+#     .. [2] McCully, C., 2014, "Astro-SCRAPPY",
+#        https://github.com/astropy/astroscrappy
 
-    elif isinstance(ccd, CCDData):
-        # Start with a check for a special case: ccd is in electron, and
-        # gain and readnoise have no units. In that case we issue a warning
-        # instead of raising an error to avoid crashing user's pipelines.
-        if ccd.unit.is_equivalent(u.electron) and gain.value != 1.0:
-            warnings.warn("Image unit is electron but gain value "
-                          "is not 1.0. Data maybe end up being gain "
-                          "corrected twice.")
+#     Examples
+#     --------
+#     1) Given an numpy.ndarray object, the syntax for running
+#        cosmicrar_lacosmic would be:
 
-        else:
-            if ((readnoise.unit == u.electron)
-                and (ccd.unit == u.electron)
-                and (gain.value == 1.0)):
-                gain = gain.value * u.one
-            # Check unit consistency before taking the time to check for
-            # cosmic rays.
-            if not (gain * ccd).unit.is_equivalent(readnoise.unit):
-                raise ValueError('Inconsistent units for gain ({}) '.format(gain.unit) +
-                                 ' ccd ({}) and readnoise ({}).'.format(ccd.unit,
-                                                                        readnoise.unit))
+#        >>> newdata, mask = cosmicray_lacosmic(data, sigclip=5)  #doctest: +SKIP
 
-        crmask, cleanarr = detect_cosmics(
-            ccd.data, inmask=ccd.mask,
-            sigclip=sigclip, sigfrac=sigfrac, objlim=objlim, gain=gain.value,
-            readnoise=readnoise.value, satlevel=satlevel, pssl=pssl,
-            niter=niter, sepmed=sepmed, cleantype=cleantype,
-            fsmode=fsmode, psfmodel=psfmodel, psffwhm=psffwhm,
-            psfsize=psfsize, psfk=psfk, psfbeta=psfbeta, verbose=verbose)
+#        where the error is an array that is the same shape as data but
+#        includes the pixel error. This would return a data array, newdata,
+#        with the bad pixels replaced by the local median from a box of 11
+#        pixels; and it would return a mask indicating the bad pixels.
 
-        # create the new ccd data object
-        nccd = ccd.copy()
+#     2) Given an `~astropy.nddata.CCDData` object with an uncertainty frame, the syntax
+#        for running cosmicrar_lacosmic would be:
 
-        # Remove the gain scaling if it wasn't desired
-        if not gain_apply and gain != 1.0:
-            cleanarr = cleanarr / gain.value
+#        >>> newccd = cosmicray_lacosmic(ccd, sigclip=5)   # doctest: +SKIP
 
-        # Fix the units if the gain is being applied.
-        nccd.unit = ccd.unit * gain.unit
+#        The newccd object will have bad pixels in its data array replace and the
+#        mask of the object will be created if it did not previously exist or be
+#        updated with the detected cosmic rays.
+#     """
+#     from astroscrappy import detect_cosmics 
 
-        nccd.data = cleanarr
-        if nccd.mask is None:
-            nccd.mask = crmask
-        else:
-            nccd.mask = nccd.mask + crmask
+#     # If we didn't get a quantity, put them in, with unit specified by the
+#     # documentation above.
+#     if not isinstance(gain, u.Quantity):
+#         # Gain will change the value, so use the proper units
+#         gain = gain * u.electron / u.adu
 
-        return nccd
+#     # Set the units of readnoise to electrons, as specified in the
+#     # documentation, if no unit is present.
+#     if not isinstance(readnoise, u.Quantity):
+#         readnoise = readnoise * u.electron
 
-    else:
-        raise TypeError('ccd is not a CCDData or ndarray object.')
+#     if isinstance(ccd, np.ndarray): 
+#         data = ccd
+
+#         crmask, cleanarr = detect_cosmics(
+#             data, inmask=None, sigclip=sigclip,
+#             sigfrac=sigfrac, objlim=objlim, gain=gain.value,
+#             readnoise=readnoise.value, satlevel=satlevel, pssl=pssl,
+#             niter=niter, sepmed=sepmed, cleantype=cleantype,
+#             fsmode=fsmode, psfmodel=psfmodel, psffwhm=psffwhm,
+#             psfsize=psfsize, psfk=psfk, psfbeta=psfbeta,
+#             verbose=verbose)
+
+#         if not gain_apply and gain != 1.0:
+#             cleanarr = cleanarr / gain
+#         return cleanarr, crmask
+
+#     elif isinstance(ccd, CCDData):
+#         # Start with a check for a special case: ccd is in electron, and
+#         # gain and readnoise have no units. In that case we issue a warning
+#         # instead of raising an error to avoid crashing user's pipelines.
+#         if ccd.unit.is_equivalent(u.electron) and gain.value != 1.0:
+#             warnings.warn("Image unit is electron but gain value "
+#                           "is not 1.0. Data maybe end up being gain "
+#                           "corrected twice.")
+
+#         else:
+#             if ((readnoise.unit == u.electron)
+#                 and (ccd.unit == u.electron)
+#                 and (gain.value == 1.0)):
+#                 gain = gain.value * u.one
+#             # Check unit consistency before taking the time to check for
+#             # cosmic rays.
+#             if not (gain * ccd).unit.is_equivalent(readnoise.unit):
+#                 raise ValueError('Inconsistent units for gain ({}) '.format(gain.unit) +
+#                                  ' ccd ({}) and readnoise ({}).'.format(ccd.unit,
+#                                                                         readnoise.unit))
+
+#         crmask, cleanarr = detect_cosmics(
+#             ccd.data, inmask=ccd.mask,
+#             sigclip=sigclip, sigfrac=sigfrac, objlim=objlim, gain=gain.value,
+#             readnoise=readnoise.value, satlevel=satlevel, pssl=pssl,
+#             niter=niter, sepmed=sepmed, cleantype=cleantype,
+#             fsmode=fsmode, psfmodel=psfmodel, psffwhm=psffwhm,
+#             psfsize=psfsize, psfk=psfk, psfbeta=psfbeta, verbose=verbose)
+
+#         # create the new ccd data object
+#         nccd = ccd.copy()
+
+#         # Remove the gain scaling if it wasn't desired
+#         if not gain_apply and gain != 1.0:
+#             cleanarr = cleanarr / gain.value
+
+#         # Fix the units if the gain is being applied.
+#         nccd.unit = ccd.unit * gain.unit
+
+#         nccd.data = cleanarr
+#         if nccd.mask is None:
+#             nccd.mask = crmask
+#         else:
+#             nccd.mask = nccd.mask + crmask
+
+#         return nccd
+
+#     else:
+#         raise TypeError('ccd is not a CCDData or ndarray object.')
+# #============================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def cosmicray_median(ccd, error_image=None, thresh=5, mbox=11, gbox=0,
